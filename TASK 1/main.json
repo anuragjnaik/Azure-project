@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.42.1.51946",
+      "templateHash": "14195151052396844071"
+    }
+  },
+  "parameters": {
+    "location1": {
+      "type": "string",
+      "defaultValue": "eastus"
+    },
+    "location2": {
+      "type": "string",
+      "defaultValue": "eastus2"
+    }
+  },
+  "variables": {
+    "vnet1Name": "eastus-vnet",
+    "vnet2Name": "eastus2-vnet"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('vnet1Name')]",
+      "location": "[parameters('location1')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "web-subnet",
+            "properties": {
+              "addressPrefix": "10.0.1.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('vnet2Name')]",
+      "location": "[parameters('location2')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "app-subnet",
+            "properties": {
+              "addressPrefix": "10.1.1.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', variables('vnet1Name'), 'peer1')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet2Name'))]"
+        },
+        "allowVirtualNetworkAccess": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet1Name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet2Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', variables('vnet2Name'), 'peer2')]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet1Name'))]"
+        },
+        "allowVirtualNetworkAccess": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet1Name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet2Name'))]"
+      ]
+    }
+  ]
+}
