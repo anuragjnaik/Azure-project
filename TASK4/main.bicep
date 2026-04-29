@@ -136,7 +136,7 @@ resource conn2to1 'Microsoft.Network/connections@2023-05-01' = {
   }
 }
 
-/* ---------------- 4. STORAGE, FIREWALL, LB, NICS & VMS ---------------- */
+/* ---------------- 4. STORAGE, FIREWALL, LB, NICS & VMS  ---------------- */
 
 resource storage1 'Microsoft.Storage/storageAccounts@2023-01-01' = { name: storageAccountEastUSName, location: location1, sku: { name: 'Standard_LRS' }, kind: 'StorageV2' }
 resource storage2 'Microsoft.Storage/storageAccounts@2023-01-01' = { name: storageAccountEastUS2Name, location: location2, sku: { name: 'Standard_GRS' }, kind: 'StorageV2' }
